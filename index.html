@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Bitácora Musicala</title>
+  <meta name="description" content="App web personal de notas rápidas, pendientes e ideas para el equipo de Musicala." />
+  <meta name="theme-color" content="#f7f4ff" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" href="./logo.png?v=oficial" />
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body>
+  <div id="app" class="app-shell">
+    <section id="welcomeScreen" class="screen screen--active">
+      <div class="welcome-card">
+        <div class="welcome-brand">
+          <div class="welcome-brand__logo"><img src="./logo.png?v=oficial" alt="Logo Musicala" /></div>
+          <p class="welcome-brand__eyebrow">Musicala</p>
+          <h1 class="welcome-brand__title">Tu bitácora personal</h1>
+          <p class="welcome-brand__text">Guarda ideas, pendientes, recordatorios y notas rápidas del trabajo en este dispositivo.</p>
+        </div>
+
+        <form id="profileForm" class="form-card" autocomplete="off">
+          <div class="field">
+            <label for="profileName">Tu nombre</label>
+            <input type="text" id="profileName" name="profileName" placeholder="Ej. Alek" maxlength="40" required />
+          </div>
+
+          <div class="field">
+            <label for="profileRole">Área o rol <span>(opcional)</span></label>
+            <input type="text" id="profileRole" name="profileRole" placeholder="Ej. Dirección, Admin, Docencia..." maxlength="60" />
+          </div>
+
+          <div class="field">
+            <label for="profileTheme">Tema visual</label>
+            <select id="profileTheme" name="profileTheme">
+              <option value="violeta">Violeta Musicala</option>
+              <option value="azul">Azul Musicala</option>
+              <option value="magenta">Magenta Musicala</option>
+              <option value="verde">Verde suave</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn--primary btn--full">Entrar a mi bitácora</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="mainScreen" class="screen" hidden>
+      <aside class="sidebar">
+        <div class="sidebar__top">
+          <div class="brand-card">
+            <div class="brand-card__icon"><img src="./logo.png?v=oficial" alt="Logo Musicala" /></div>
+            <div>
+              <p class="brand-card__eyebrow">Musicala</p>
+              <h2 class="brand-card__title">Notas al vuelo</h2>
+            </div>
+          </div>
+
+          <button id="newNoteBtn" class="btn btn--primary btn--full" type="button">+ Post-it nuevo</button>
+        </div>
+
+        <nav class="menu-card" aria-label="Vistas de notas">
+          <button class="menu-item is-active" type="button" data-view="all"><span>📌</span><span>Todas</span><strong id="navAllCount">0</strong></button>
+          <button class="menu-item" type="button" data-view="today"><span>📅</span><span>Hoy</span><strong id="navTodayCount">0</strong></button>
+          <button class="menu-item" type="button" data-view="pending"><span>⏳</span><span>Pendientes</span><strong id="navPendingCount">0</strong></button>
+          <button class="menu-item" type="button" data-view="ideas"><span>💡</span><span>Ideas</span><strong id="navIdeasCount">0</strong></button>
+          <button class="menu-item" type="button" data-view="archived"><span>🗂️</span><span>Archivo</span><strong id="navArchivedCount">0</strong></button>
+        </nav>
+
+        <section class="sidebar-card filter-card">
+          <h3 class="sidebar-card__title">Etiquetas sugeridas</h3>
+          <div class="tag-cloud">
+            <button type="button" class="tag-chip" data-tag="urgente">urgente</button>
+            <button type="button" class="tag-chip" data-tag="reunión">reunión</button>
+            <button type="button" class="tag-chip" data-tag="docentes">docentes</button>
+            <button type="button" class="tag-chip" data-tag="pagos">pagos</button>
+            <button type="button" class="tag-chip" data-tag="marketing">marketing</button>
+            <button type="button" class="tag-chip" data-tag="idea">idea</button>
+          </div>
+        </section>
+
+        <section class="sidebar-card profile-card">
+          <div class="profile-card__row">
+            <div>
+              <p class="profile-card__label">Perfil actual</p>
+              <h3 id="sidebarUserName" class="profile-card__name">Usuario</h3>
+              <p id="sidebarUserRole" class="profile-card__role">Sin rol</p>
+            </div>
+            <div class="profile-card__avatar" id="profileAvatar">M</div>
+          </div>
+          <button id="openSettingsBtn" class="btn btn--ghost btn--full" type="button">Ajustes</button>
+        </section>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div>
+            <h1 id="greetingTitle" class="topbar__title">Hola</h1>
+            <p id="currentDateLabel" class="topbar__subtitle">Tablero rápido para ideas, pendientes y recordatorios.</p>
+          </div>
+          <div class="topbar__actions">
+            <button id="quickNoteBtn" class="btn btn--secondary" type="button">Abrir editor</button>
+            <button id="topbarNewNoteBtn" class="btn btn--primary" type="button">+ Post-it</button>
+          </div>
+        </header>
+
+        <section class="quick-capture">
+          <textarea id="quickCaptureInput" rows="2" placeholder="Escribe una nota rápida..."></textarea>
+          <div class="quick-capture__tools">
+            <select id="quickCaptureType" aria-label="Tipo de nota rápida">
+              <option value="quick">Nota</option>
+              <option value="pending">Pendiente</option>
+              <option value="idea">Idea</option>
+              <option value="log">Bitácora</option>
+            </select>
+            <select id="quickCapturePriority" aria-label="Prioridad de nota rápida">
+              <option value="media">Media</option>
+              <option value="alta">Alta</option>
+              <option value="baja">Baja</option>
+            </select>
+            <input id="quickCaptureDueDate" type="date" aria-label="Fecha límite rápida" />
+            <button id="quickCaptureSaveBtn" class="send-btn" type="button" aria-label="Guardar nota rápida">➜</button>
+          </div>
+        </section>
+
+        <section class="toolbar">
+          <div class="search-box">
+            <input type="search" id="searchInput" placeholder="Buscar por título, contenido o etiqueta..." autocomplete="off" />
+          </div>
+          <div class="toolbar__filters">
+            <select id="filterType">
+              <option value="all">Todos los tipos</option>
+              <option value="quick">Nota rápida</option>
+              <option value="pending">Pendiente</option>
+              <option value="idea">Idea</option>
+              <option value="log">Bitácora</option>
+            </select>
+            <select id="filterPriority">
+              <option value="all">Todas las prioridades</option>
+              <option value="alta">Alta</option>
+              <option value="media">Media</option>
+              <option value="baja">Baja</option>
+            </select>
+            <select id="sortNotes">
+              <option value="updated-desc">Más recientes</option>
+              <option value="updated-asc">Más antiguas</option>
+              <option value="priority-desc">Prioridad alta</option>
+              <option value="due-asc">Fecha límite</option>
+              <option value="title-asc">Título A-Z</option>
+            </select>
+          </div>
+        </section>
+
+        <section class="summary-grid" aria-label="Resumen de notas">
+          <article class="summary-card"><p class="summary-card__label">Total notas</p><h3 id="totalNotesCount" class="summary-card__value">0</h3></article>
+          <article class="summary-card"><p class="summary-card__label">Pendientes</p><h3 id="pendingNotesCount" class="summary-card__value">0</h3></article>
+          <article class="summary-card"><p class="summary-card__label">Ideas</p><h3 id="ideasNotesCount" class="summary-card__value">0</h3></article>
+          <article class="summary-card"><p class="summary-card__label">Archivadas</p><h3 id="archivedNotesCount" class="summary-card__value">0</h3></article>
+        </section>
+
+        <section class="utility-bar" aria-label="Herramientas de datos">
+          <button id="exportDataBtn" class="btn btn--ghost" type="button">Exportar respaldo</button>
+          <label class="btn btn--ghost file-btn" for="importDataInput">Importar respaldo</label>
+          <input id="importDataInput" type="file" accept="application/json,.json" hidden />
+          <p id="statusMessage" class="status-message" aria-live="polite"></p>
+        </section>
+
+        <section class="notes-section board-section">
+          <div class="notes-section__header">
+            <div>
+              <p class="notes-section__eyebrow">Tablero</p>
+              <h2 id="notesSectionTitle">Todas las notas</h2>
+            </div>
+          </div>
+
+          <div id="emptyState" class="empty-state">
+            <div class="empty-state__icon">📝</div>
+            <h3>No hay notas todavía</h3>
+            <p>Crea tu primera nota para guardar ideas, pendientes o recordatorios y tenerlos listos cuando empieces la jornada.</p>
+            <button id="emptyStateNewBtn" class="btn btn--primary" type="button">Crear primera nota</button>
+          </div>
+
+          <div id="notesList" class="notes-grid" hidden></div>
+        </section>
+      </main>
+    </section>
+
+    <div id="noteModal" class="modal" hidden>
+      <div class="modal__backdrop" data-close-note-modal></div>
+      <section class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="noteModalTitle">
+        <header class="modal__header">
+          <div><p class="modal__eyebrow">Editor de nota</p><h2 id="noteModalTitle">Nueva nota</h2></div>
+          <button id="closeNoteModalBtn" class="icon-btn" type="button" aria-label="Cerrar">×</button>
+        </header>
+
+        <form id="noteForm" class="note-form" autocomplete="off">
+          <input type="hidden" id="noteId" name="noteId" />
+          <div class="field">
+            <label for="noteTitle">Título</label>
+            <input type="text" id="noteTitle" name="noteTitle" placeholder="Ej. Llamar a acudiente de Samuel" maxlength="120" required />
+          </div>
+          <div class="field-grid">
+            <div class="field">
+              <label for="noteType">Tipo</label>
+              <select id="noteType" name="noteType">
+                <option value="quick">Nota rápida</option>
+                <option value="pending">Pendiente</option>
+                <option value="idea">Idea</option>
+                <option value="log">Bitácora</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="notePriority">Prioridad</label>
+              <select id="notePriority" name="notePriority">
+                <option value="media">Media</option>
+                <option value="alta">Alta</option>
+                <option value="baja">Baja</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label for="noteCategory">Categoría</label>
+            <input type="text" id="noteCategory" name="noteCategory" placeholder="Ej. Docentes, Marketing, Programación..." maxlength="60" />
+          </div>
+          <div class="field">
+            <label for="noteTags">Etiquetas</label>
+            <input type="text" id="noteTags" name="noteTags" placeholder="Ej. urgente, reunión, abril" />
+            <small>Sepáralas por comas.</small>
+          </div>
+          <div class="field-grid">
+            <div class="field">
+              <label for="noteDueDate">Fecha límite <span>(opcional)</span></label>
+              <input type="date" id="noteDueDate" name="noteDueDate" />
+            </div>
+            <div class="field">
+              <label for="noteReminder">Recordatorio <span>(opcional)</span></label>
+              <input type="datetime-local" id="noteReminder" name="noteReminder" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="noteContent">Contenido</label>
+            <textarea id="noteContent" name="noteContent" rows="8" placeholder="Escribe aquí la nota..." required></textarea>
+          </div>
+          <div class="field">
+            <label for="noteChecklist">Checklist <span>(opcional)</span></label>
+            <textarea id="noteChecklist" name="noteChecklist" rows="5" placeholder="Una tarea por línea&#10;Ej. Llamar a proveedor&#10;Enviar propuesta&#10;Revisar horario"></textarea>
+            <small>Escribe una tarea por línea.</small>
+          </div>
+          <div class="form-toggles">
+            <label class="checkbox-row"><input type="checkbox" id="notePinned" name="notePinned" /><span>Fijar esta nota</span></label>
+            <label class="checkbox-row"><input type="checkbox" id="noteArchived" name="noteArchived" /><span>Guardar como archivada</span></label>
+          </div>
+          <div class="form-actions">
+            <button id="deleteNoteBtn" class="btn btn--danger" type="button" hidden>Eliminar</button>
+            <div class="form-actions__right">
+              <button id="cancelNoteBtn" class="btn btn--ghost" type="button">Cancelar</button>
+              <button id="saveNoteBtn" class="btn btn--primary" type="submit">Guardar nota</button>
+            </div>
+          </div>
+        </form>
+      </section>
+    </div>
+
+    <div id="settingsModal" class="modal" hidden>
+      <div class="modal__backdrop" data-close-settings-modal></div>
+      <section class="modal__panel modal__panel--sm" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
+        <header class="modal__header">
+          <div><p class="modal__eyebrow">Configuración</p><h2 id="settingsModalTitle">Tu perfil local</h2></div>
+          <button id="closeSettingsModalBtn" class="icon-btn" type="button" aria-label="Cerrar">×</button>
+        </header>
+        <form id="settingsForm" class="note-form" autocomplete="off">
+          <div class="field">
+            <label for="settingsName">Nombre</label>
+            <input type="text" id="settingsName" name="settingsName" maxlength="40" required />
+          </div>
+          <div class="field">
+            <label for="settingsRole">Área o rol</label>
+            <input type="text" id="settingsRole" name="settingsRole" maxlength="60" />
+          </div>
+          <div class="field">
+            <label for="settingsTheme">Tema visual</label>
+            <select id="settingsTheme" name="settingsTheme">
+              <option value="violeta">Violeta Musicala</option>
+              <option value="azul">Azul Musicala</option>
+              <option value="magenta">Magenta Musicala</option>
+              <option value="verde">Verde suave</option>
+            </select>
+          </div>
+          <div class="form-actions">
+            <button id="resetAppBtn" class="btn btn--danger" type="button">Borrar datos locales</button>
+            <div class="form-actions__right"><button id="saveSettingsBtn" class="btn btn--primary" type="submit">Guardar cambios</button></div>
+          </div>
+        </form>
+      </section>
+    </div>
+  </div>
+
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>
